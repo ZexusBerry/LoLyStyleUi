@@ -1,5 +1,5 @@
 local UI = {}
--- ыуыу
+
 local TweenService = game:GetService("TweenService")
 
 function UI:CreateMenu(parent, title, width, height)
@@ -30,7 +30,6 @@ function UI:CreateMenu(parent, title, width, height)
     shadow.SliceCenter = Rect.new(10, 10, 118, 118)
     shadow.Parent = menu
 
-    -- Заголовок меню
     local header = Instance.new("TextLabel")
     header.Name = "Header"
     header.Size = UDim2.new(1, 0, 0, 50)

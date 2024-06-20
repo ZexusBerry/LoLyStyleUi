@@ -11,6 +11,7 @@ function UI:CreateMenu(parent, title, width, height)
     menu.BackgroundTransparency = 0.1
     menu.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     menu.ClipsDescendants = true
+    menu.Visible = true
     menu.Parent = parent
 
     -- Закругленные углы

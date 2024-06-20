@@ -2,6 +2,7 @@ local UI = {}
 
 local TweenService = game:GetService("TweenService")
 
+
 function UI:CreateMenu(parent, title, width, height)
     local menu = Instance.new("Frame")
     menu.Name = "Menu"

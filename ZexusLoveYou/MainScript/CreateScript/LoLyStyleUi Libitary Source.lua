@@ -1,286 +1,195 @@
+ Library Setup
 local UI = {}
+UI.__index = UI
 
-local TweenService = game:GetService("TweenService")
-
-
-function UI:CreateMenu(parent, title, width, height)
-    local menu = Instance.new("Frame")
-    menu.Name = "Menu"
-    menu.Size = UDim2.new(0, width, 0, height)
-    menu.Position = UDim2.new(0.5, -width/2, 0.5, -height/2)
-    menu.BackgroundTransparency = 0.1
-    menu.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    menu.ClipsDescendants = true
-    menu.Visible = true
-    menu.Parent = parent
-
-    -- Закругленные углы
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.02, 0)
-    corner.Parent = menu
-
-    -- Тени
-    local shadow = Instance.new("ImageLabel")
-    shadow.Name = "Shadow"
-    shadow.Size = UDim2.new(1, 20, 1, 20)
-    shadow.Position = UDim2.new(0, -10, 0, -10)
-    shadow.Image = "rbxassetid://1316045217"
-    shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-    shadow.ImageTransparency = 0.5
-    shadow.ScaleType = Enum.ScaleType.Slice
-    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-    shadow.Parent = menu
-
-    local header = Instance.new("TextLabel")
-    header.Name = "Header"
-    header.Size = UDim2.new(1, 0, 0, 50)
-    header.BackgroundTransparency = 1
-    header.Text = title
-    header.TextScaled = true
-    header.TextColor3 = Color3.fromRGB(255, 255, 255)
-    header.Font = Enum.Font.GothamBold
-    header.Parent = menu
-
-    -- Градиентный фон
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 40)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 60))
-    })
-    gradient.Rotation = 90
-    gradient.Parent = menu
-
-    return menu
+-- Helper functions for creating UI elements
+local function createFrame(name, parent, position, size, color)
+    local frame = Instance.new("Frame")
+    frame.Name = name
+    frame.Parent = parent
+    frame.Position = position
+    frame.Size = size
+    frame.BackgroundColor3 = color
+    frame.BorderSizePixel = 0
+    return frame
 end
 
--- Функция для создания кнопки
-function UI:CreateButton(parent, text, onClick)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, -20, 0, 50)
-    button.Position = UDim2.new(0.5, 0, 0.2, 0)
-    button.AnchorPoint = Vector2.new(0.5, 0)
-    button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    button.Text = text
-    button.TextScaled = true
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Font = Enum.Font.GothamBold
-    button.Parent = parent
-
-    -- Закругленные углы
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.1, 0)
-    corner.Parent = button
-
-    -- Градиент
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 100, 100)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
-    })
-    gradient.Rotation = 90
-    gradient.Parent = button
-
-    -- Тени
-    local shadow = Instance.new("ImageLabel")
-    shadow.Name = "Shadow"
-    shadow.Size = UDim2.new(1, 15, 1, 15)
-    shadow.Position = UDim2.new(0, -7.5, 0, -7.5)
-    shadow.Image = "rbxassetid://1316045217"
-    shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-    shadow.ImageTransparency = 0.5
-    shadow.ScaleType = Enum.ScaleType.Slice
-    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-    shadow.Parent = button
-
-    -- Анимация нажатия
-    button.MouseButton1Click:Connect(function()
-        local tween = TweenService:Create(button, TweenInfo.new(0.1), {Size = UDim2.new(1, -25, 0, 45)})
-        tween:Play()
-        tween.Completed:Connect(function()
-            local tweenBack = TweenService:Create(button, TweenInfo.new(0.1), {Size = UDim2.new(1, -20, 0, 50)})
-            tweenBack:Play()
-        end)
-        if onClick then onClick() end
-    end)
-
-    return button
-end
-
--- Функция для создания метки
-function UI:CreateLabel(parent, text)
+local function createTextLabel(name, parent, position, size, text, font, textSize, textColor)
     local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(1, -20, 0, 50)
-    label.Position = UDim2.new(0.5, 0, 0.4, 0)
-    label.AnchorPoint = Vector2.new(0.5, 0)
-    label.BackgroundTransparency = 1
-    label.Text = text
-    label.TextScaled = true
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.Font = Enum.Font.GothamBold
+    label.Name = name
     label.Parent = parent
-
-    -- Тени
-    local shadow = Instance.new("ImageLabel")
-    shadow.Name = "Shadow"
-    shadow.Size = UDim2.new(1, 15, 1, 15)
-    shadow.Position = UDim2.new(0, -7.5, 0, -7.5)
-    shadow.Image = "rbxassetid://1316045217"
-    shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-    shadow.ImageTransparency = 0.5
-    shadow.ScaleType = Enum.ScaleType.Slice
-    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-    shadow.Parent = label
-
+    label.Position = position
+    label.Size = size
+    label.Text = text
+    label.Font = font
+    label.TextSize = textSize
+    label.TextColor3 = textColor
+    label.BackgroundTransparency = 1
     return label
 end
 
--- Функция для создания выпадающего списка (DropDown)
-function UI:CreateDropDown(parent, options, onSelect)
-    local dropDown = Instance.new("Frame")
-    dropDown.Size = UDim2.new(1, -20, 0, 50)
-    dropDown.Position = UDim2.new(0.5, 0, 0.6, 0)
-    dropDown.AnchorPoint = Vector2.new(0.5, 0)
-    dropDown.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    dropDown.ClipsDescendants = true
-    dropDown.Parent = parent
+local function createButton(name, parent, position, size, text, font, textSize, textColor, color)
+    local button = Instance.new("TextButton")
+    button.Name = name
+    button.Parent = parent
+    button.Position = position
+    button.Size = size
+    button.Text = text
+    button.Font = font
+    button.TextSize = textSize
+    button.TextColor3 = textColor
+    button.BackgroundColor3 = color
+    button.BorderSizePixel = 0
+    return button
+end
 
-    -- Закругленные углы
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0.1, 0)
-    corner.Parent = dropDown
+local function createDropdown(name, parent, position, size, options, font, textSize, textColor, color)
+    local dropdown = Instance.new("Frame")
+    dropdown.Name = name
+    dropdown.Parent = parent
+    dropdown.Position = position
+    dropdown.Size = size
+    dropdown.BackgroundColor3 = color
+    dropdown.BorderSizePixel = 0
 
-    -- Тени
-    local shadow = Instance.new("ImageLabel")
-    shadow.Name = "Shadow"
-    shadow.Size = UDim2.new(1, 15, 1, 15)
-    shadow.Position = UDim2.new(0, -7.5, 0, -7.5)
-    shadow.Image = "rbxassetid://1316045217"
-    shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-    shadow.ImageTransparency = 0.5
-    shadow.ScaleType = Enum.ScaleType.Slice
-    shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-    shadow.Parent = dropDown
+    local dropButton = createButton("DropButton", dropdown, UDim2.new(0, 0, 0, 0), size, options[1], font, textSize, textColor, color)
+    local dropList = Instance.new("Frame")
+    dropList.Name = "DropList"
+    dropList.Parent = dropdown
+    dropList.Position = UDim2.new(0, 0, 1, 0)
+    dropList.Size = UDim2.new(1, 0, #options, size.Y.Offset)
+    dropList.Visible = false
 
-    -- Кнопка для раскрытия списка
-    local dropButton = Instance.new("TextButton")
-    dropButton.Size = UDim2.new(1, 0, 1, 0)
-    dropButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    dropButton.Text = options[1]
-    dropButton.TextScaled = true
-    dropButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    dropButton.Font = Enum.Font.GothamBold
-    dropButton.Parent = dropDown
+    for i, option in ipairs(options) do
+        local optionButton = createButton("Option" .. i, dropList, UDim2.new(0, 0, (i - 1), size.Y.Offset), UDim2.new(1, 0, 1, 0), option, font, textSize, textColor, color)
+        optionButton.MouseButton1Click:Connect(function()
+            dropButton.Text = option
+            dropList.Visible = false
+        end)
+    end
 
-    -- Градиент (продолжение для DropDown)
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 30)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 50))
-    })
-    gradient.Rotation = 90
-    gradient.Parent = dropDown
-
-    -- Анимация раскрытия списка
-    local isDropdownOpen = false
     dropButton.MouseButton1Click:Connect(function()
-        isDropdownOpen = not isDropdownOpen
-        local sizeY = isDropdownOpen and UDim2.new(1, 0, 0, 150) or UDim2.new(1, 0, 0, 50)
-        local tween = TweenService:Create(dropDown, TweenInfo.new(0.2), {Size = sizeY})
-        tween:Play()
+        dropList.Visible = not dropList.Visible
     end)
 
-    -- Создание элементов списка
-    local listContainer = Instance.new("Frame")
-    listContainer.Size = UDim2.new(1, 0, 0, 0)
-    listContainer.Position = UDim2.new(0, 0, 1, 0)
-    listContainer.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    listContainer.Visible = false
-    listContainer.Parent = dropDown
+    return dropdown
+end
 
-    -- Закругленные углы для контейнера списка
-    local listCorner = Instance.new("UICorner")
-    listCorner.CornerRadius = UDim.new(0, 6)
-    listCorner.Parent = listContainer
+local function createCheckBox(name, parent, position, size, text, font, textSize, textColor, boxColor)
+    local checkBox = Instance.new("Frame")
+    checkBox.Name = name
+    checkBox.Parent = parent
+    checkBox.Position = position
+    checkBox.Size = size
 
-    -- Создание элементов списка
-    local function createListItems()
-        for i, optionText in ipairs(options) do
-            local listItem = Instance.new("TextButton")
-            listItem.Size = UDim2.new(1, 0, 0, 50)
-            listItem.Position = UDim2.new(0, 0, 0, (i - 1) * 50)
-            listItem.AnchorPoint = Vector2.new(0, 0)
-            listItem.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            listItem.Text = optionText
-            listItem.TextScaled = true
-            listItem.TextColor3 = Color3.fromRGB(255, 255, 255)
-            listItem.Font = Enum.Font.Gotham
-            listItem.Parent = listContainer
+    local box = createFrame("Box", checkBox, UDim2.new(0, 0, 0, 0), UDim2.new(0.3, 0, 1, 0), boxColor)
+    local label = createTextLabel("Label", checkBox, UDim2.new(0.4, 0, 0, 0), UDim2.new(0.6, 0, 1, 0), text, font, textSize, textColor)
 
-            -- Анимация выбора элемента списка
-            listItem.MouseButton1Click:Connect(function()
-                dropButton.Text = optionText
-                isDropdownOpen = false
-                TweenService:Create(dropDown, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 50)}):Play()
-                if onSelect then onSelect(i, optionText) end
-            end)
+    local isChecked = false
+    box.MouseButton1Click:Connect(function()
+        isChecked = not isChecked
+        box.BackgroundColor3 = isChecked and boxColor or Color3.new(1, 1, 1)
+    end)
 
-            -- Тени для элемента списка
-            local shadow = Instance.new("ImageLabel")
-            shadow.Name = "Shadow"
-            shadow.Size = UDim2.new(1, 15, 1, 15)
-            shadow.Position = UDim2.new(0, -7.5, 0, -7.5)
-            shadow.Image = "rbxassetid://1316045217"
-            shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-            shadow.ImageTransparency = 0.5
-            shadow.ScaleType = Enum.ScaleType.Slice
-            shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-            shadow.Parent = listItem
+    return checkBox
+end
+
+local function createTrackBar(name, parent, position, size, min, max, initial, color)
+    local trackBar = Instance.new("Frame")
+    trackBar.Name = name
+    trackBar.Parent = parent
+    trackBar.Position = position
+    trackBar.Size = size
+    trackBar.BackgroundColor3 = Color3.new(0.8, 0.8, 0.8)
+
+    local handle = createFrame("Handle", trackBar, UDim2.new((initial - min) / (max - min), 0, 0, 0), UDim2.new(0.1, 0, 1, 0), color)
+
+    local dragging = false
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
         end
-    end
+    end)
 
-    -- Создание элементов списка
-    createListItems()
+    handle.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
 
-    return dropDown
+    handle.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local mousePos = input.Position.X
+            local barPos = trackBar.AbsolutePosition.X
+            local barSize = trackBar.AbsoluteSize.X
+            local newX = math.clamp(mousePos - barPos, 0, barSize - handle.Size.X.Offset)
+            handle.Position = UDim2.new(0, newX, 0, 0)
+        end
+    end)
+
+    return trackBar
 end
 
--- Функция для создания вкладок (Tabs)
-function UI:CreateTabs(parent, tabs)
-    local tabContainer = Instance.new("Frame")
-    tabContainer.Size = UDim2.new(1, 0, 1, 0)
-    tabContainer.BackgroundTransparency = 1
-    tabContainer.Parent = parent
+local function createLoadingBar(name, parent, position, size, color)
+    local loadingBar = Instance.new("Frame")
+    loadingBar.Name = name
+    loadingBar.Parent = parent
+    loadingBar.Position = position
+    loadingBar.Size = size
+    loadingBar.BackgroundColor3 = Color3.new(0.8, 0.8, 0.8)
 
-    local tabButtons = {}
+    local fill = createFrame("Fill", loadingBar, UDim2.new(0, 0, 0, 0), UDim2.new(0, 0, 1, 0), color)
 
-    -- Создание кнопок вкладок
-    for i, tabData in ipairs(tabs) do
-        local tabButton = Instance.new("TextButton")
-        tabButton.Size = UDim2.new(0, 100, 0, 50)
-        tabButton.Position = UDim2.new(0, (i - 1) * 110, 0, 0)
-        tabButton.AnchorPoint = Vector2.new(0, 0)
-        tabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        tabButton.Text = tabData.name
-        tabButton.TextScaled = true
-        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        tabButton.Font = Enum.Font.GothamBold
-        tabButton.Parent = tabContainer
-
-        -- Анимация активной вкладки
-        tabButton.MouseButton1Click:Connect(function()
-            for _, button in ipairs(tabButtons) do
-                button.TextColor3 = Color3.fromRGB(255, 255, 255)
-                button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    spawn(function()
+        while true do
+            for i = 0, size.X.Offset, 5 do
+                fill.Size = UDim2.new(0, i, 1, 0)
+                wait(0.05)
             end
-            tabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-            tabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            if tabData.onSelected then tabData.onSelected() end
-        end)
+            wait(0.5)
+            fill.Size = UDim2.new(0, 0, 1, 0)
+        end
+    end)
 
-        table.insert(tabButtons, tabButton)
-    end
-
-    return tabContainer
+    return loadingBar
 end
 
-return UI
+-- UI Library functions
+function UI.new(name)
+    local self = setmetatable({}, UI)
+    self.ScreenGui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+    self.ScreenGui.Name = name
+    self.MainFrame = createFrame("MainFrame", self.ScreenGui, UDim2.new(0.3, 0, 0.3, 0), UDim2.new(0.4, 0, 0.4, 0), Color3.new(0.2, 0.2, 0.2))
+    return self
+end
+
+function UI:addTab(name)
+    local tab = createButton(name .. "Tab", self.MainFrame, UDim2.new(#self.MainFrame:GetChildren() / 4, 0, 0, 0), UDim2.new(0.25, 0, 0.1, 0), name, Enum.Font.SourceSans, 20, Color3.new(1, 1, 1), Color3.new(0.3, 0.3, 0.3))
+    return tab
+end
+
+function UI:addButton(name, tab, text, onClick)
+    local button = createButton(name, tab, UDim2.new(0, 0, #tab:GetChildren() / 10, 0), UDim2.new(1, 0, 0.1, 0), text, Enum.Font.SourceSans, 20, Color3.new(1, 1, 1), Color3.new(0.4, 0.4, 0.4))
+    button.MouseButton1Click:Connect(onClick)
+    return button
+end
+
+function UI:addDropdown(name, tab, options)
+    local dropdown = createDropdown(name, tab, UDim2.new(0, 0, #tab:GetChildren() / 10, 0), UDim2.new(1, 0, 0.1, 0), options, Enum.Font.SourceSans, 20, Color3.new(1, 1, 1), Color3.new(0.4, 0.4, 0.4))
+    return dropdown
+end
+
+function UI:addCheckBox(name, tab, text)
+    local checkBox = createCheckBox(name, tab, UDim2.new(0, 0, #tab:GetChildren() / 10, 0), UDim2.new(1, 0, 0.1, 0), text, Enum.Font.SourceSans, 20, Color3.new(1, 1, 1), Color3.new(0.4, 0.4, 0.4))
+    return checkBox
+end
+
+function UI:addTrackBar(name, tab, min, max, initial)
+    local trackBar = createTrackBar(name, tab, UDim2.new(0, 0, #tab:GetChildren() / 10, 0), UDim2.new(1, 0, 0.1, 0), min, max, initial, Color3.new(0.4, 0.4, 0.4))
+    return trackBar
+end
+
+function UI:addLoadingBar(name, tab)
+    local loadingBar = createLoadingBar(name, tab, UDim2.new(0, 0, #tab:GetChildren() / 10, 0), UDim2.new(1, 0, 0.1, 0), Color3.new(0.4, 0.4, 0.4))
+    return loadingBar
+end

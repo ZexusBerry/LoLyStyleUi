@@ -9,6 +9,7 @@ local function createFrame(name, parent, position, size, color)
     frame.Size = size
     frame.BackgroundColor3 = color
     frame.BorderSizePixel = 0
+    frame.Visible = true
     return frame
 end
 

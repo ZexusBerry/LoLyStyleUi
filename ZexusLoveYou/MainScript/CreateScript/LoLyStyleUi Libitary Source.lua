@@ -1,6 +1,8 @@
 local UI = {}
 UI.__index = UI
 
+-- By Zexus
+
 -- Helper functions for creating UI elements
 local function createFrame(name, parent, position, size, color)
     local frame = Instance.new("Frame")

@@ -1,4 +1,3 @@
- Library Setup
 local UI = {}
 UI.__index = UI
 
